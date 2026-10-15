@@ -53,7 +53,7 @@
   <span class="rupee r1">₹</span><span class="rupee r2">₹</span><span class="rupee r3">₹</span>
   <div class="container">
     <div class="season reveal">Next season starts <strong>5th January</strong> <span class="tag">Applications Open</span></div>
-    <div class="pill reveal"><span class="dot"></span>Guaranteeing founders raise capital</div>
+    <div class="pill reveal"><span class="dot"></span>Committed to getting founders funded</div>
     <h1 class="reveal">
       <span>A Focused Approach</span>
       <span class="g-text">to Startup Funding</span>
@@ -61,7 +61,7 @@
     <p class="lead reveal">Helping founders connect with the right investors.</p>
     <p class="sub reveal">We work with 30 startups each year, providing dedicated support and introductions to verified investors who are actively looking to invest in Indian startups.</p>
     <div class="hero-ctas reveal">
-      <a href="#apply" class="btn btn-primary btn-lg">Submit Application <i data-lucide="arrow-right"></i></a>
+      <a href="#applyForm" class="btn btn-primary btn-lg">Submit Application <i data-lucide="arrow-right"></i></a>
       <a href="#how" class="btn btn-ghost btn-lg">Learn More</a>
     </div>
   </div>
@@ -70,9 +70,9 @@
 
 <!-- Trusted marquee -->
 <div class="trusted">
-  <h3>Trusted by Leading Investment Firms</h3>
+  <h3>Our Investor Network Includes</h3>
   <div class="marquee"><div class="track" id="firmTrack"></div></div>
-  <p class="note">* Representative investor network. Individual firm participation varies by deal.</p>
+  <p class="note">* Investor participation varies by deal, sector and stage.</p>
 </div>
 
 <!-- Track record -->
@@ -316,7 +316,7 @@
     <div class="ready reveal">
       <h3>Ready to Start Your Journey?</h3>
       <p>Applications are reviewed on a rolling basis. Early submission recommended.</p>
-      <a href="#apply" class="btn btn-pink">Begin Application Process</a>
+      <a href="#applyForm" class="btn btn-pink">Begin Application Process</a>
     </div>
   </div>
 </section>
@@ -334,7 +334,7 @@
       <!-- rows rendered from COMPARE in script.js -->
       <div class="table-cta">
         <h3>See if we're<br /><span class="g-blue">a good fit</span></h3>
-        <a href="#apply" class="btn btn-primary">Submit Application</a>
+        <a href="#applyForm" class="btn btn-primary">Submit Application</a>
       </div>
     </div>
   </div>
@@ -370,12 +370,40 @@
       <div class="card reveal"><i data-lucide="trending-up"></i><h4>Active Capital</h4><p>₹75+ Crore investor pool</p></div>
       <div class="card reveal"><i data-lucide="shield"></i><h4>Dedicated Support</h4><p>Personal guidance throughout</p></div>
     </div>
-    <div class="next reveal">
+    <div class="next reveal" id="applyForm">
       <h3>We work with 30 startups each year.<br /><span class="g-blue">Could yours be next?</span></h3>
-      <div class="hero-ctas">
-        <a href="mailto:info@fundlock.in?subject=FundLock%20Application" class="btn btn-primary btn-lg">Submit Application <i data-lucide="arrow-right"></i></a>
-        <a href="tel:+917737309657" class="btn btn-ghost btn-lg">Talk to Our Team</a>
-      </div>
+      <form class="apply-form" id="appForm" novalidate>
+        <div class="f2">
+          <label>Founder name*<input name="name" required autocomplete="name" /></label>
+          <label>Email*<input name="email" type="email" required autocomplete="email" /></label>
+          <label>Phone*<input name="phone" type="tel" required autocomplete="tel" placeholder="+91" /></label>
+          <label>Startup / company name*<input name="company" required autocomplete="organization" /></label>
+          <label>City*<input name="city" required /></label>
+          <label>Sector*<input name="sector" required placeholder="e.g. Fintech, D2C, Manufacturing" /></label>
+          <label>Stage*
+            <select name="stage" required>
+              <option value="">Select stage</option>
+              <option>Idea / Pre-revenue</option><option>Early revenue</option><option>Growth / Scaling</option><option>MSME (established business)</option>
+            </select>
+          </label>
+          <label>Funding required*
+            <select name="amount" required>
+              <option value="">Select range</option>
+              <option>Up to ₹50 Lakhs</option><option>₹50 Lakhs – ₹1.5 Cr</option><option>₹1.5 Cr – ₹5 Cr</option><option>₹5 Cr+</option>
+            </select>
+          </label>
+          <label>Website<input name="website" type="url" placeholder="https://" /></label>
+          <label>Pitch deck link<input name="deck" type="url" placeholder="Google Drive / Docsend link" /></label>
+        </div>
+        <label>Tell us about your business*<textarea name="about" rows="4" required placeholder="What you do, traction so far, and what the funding is for"></textarea></label>
+        <label class="hp" aria-hidden="true">Leave empty<input name="company_url" tabindex="-1" autocomplete="off" /></label>
+        <label class="consent"><input type="checkbox" name="consent" required /> I agree to the <a href="/privacy.html" target="_blank">Privacy Policy</a> and to FundLock contacting me about my application.</label>
+        <div class="hero-ctas">
+          <button type="submit" class="btn btn-primary btn-lg">Submit Application <i data-lucide="arrow-right"></i></button>
+          <a href="tel:+917737309657" class="btn btn-ghost btn-lg">Talk to Our Team</a>
+        </div>
+        <p class="form-msg" id="formMsg" role="status"></p>
+      </form>
     </div>
     <small>Applications are reviewed throughout the year. We'll get back to you within 5 business days.</small>
   </div>
@@ -390,7 +418,7 @@
       <p><b>No Guarantee:</b> While FundLock provides access to verified investors and strategic support, selection does not guarantee funding. Final investment decisions rest with individual investors based on their own due diligence.</p>
       <p><b>Program Fee:</b> FundLock charges a flat program fee of ₹1,00,000 (₹1 Lac) plus applicable taxes for the entire process, covering all mentoring, documentation, investor readiness, and conclave participation. Fees may vary for specific arrangements. Contact us for details.</p>
       <p><b>Regulatory Compliance:</b> FundLock operates in compliance with SEBI regulations. All investments are subject to applicable securities laws. Startups must comply with disclosure requirements and regulatory frameworks.</p>
-      <p class="fine">FundLock is a platform service provider and does not offer investment advisory services. All figures and statistics are current as of May 2026 and subject to change. For detailed terms and conditions, please refer to our <a href="#">Terms of Service</a>.</p>
+      <p class="fine">FundLock is a platform service provider and does not offer investment advisory services. All figures and statistics are current as of October 2026 and subject to change. For detailed terms and conditions, please refer to our <a href="/terms.html">Terms of Service</a>.</p>
     </div>
   </div>
 </div>
@@ -404,24 +432,18 @@
       <div class="f-about">
         <a href="#hero" class="brand"><img src="/logo.svg" alt="" class="brand-logo" /><div><div class="brand-name">FundLock</div><div class="brand-sub">Startup Funding Support</div></div></a>
         <p>We work with 30 startups each year, providing investor introductions, pitch support, and guidance throughout the fundraising process.</p>
-        <div class="social">
-          <a href="#" aria-label="LinkedIn"><i data-lucide="linkedin"></i></a>
-          <a href="#" aria-label="Twitter"><i data-lucide="twitter"></i></a>
-          <a href="#" aria-label="Instagram"><i data-lucide="instagram"></i></a>
-          <a href="#" aria-label="YouTube"><i data-lucide="youtube"></i></a>
-        </div>
       </div>
       <div class="f-col"><h5>Ecosystem</h5><a href="#how">About FundLock →</a><a href="#process">Selection Process →</a><a href="#stories">Success Stories →</a><a href="#investors">Investor Network →</a></div>
-      <div class="f-col"><h5>Resources</h5><a href="#faq">FAQ →</a><a href="#">Blog →</a><a href="#">Case Studies →</a><a href="#">Press Kit →</a></div>
-      <div class="f-col"><h5>Support</h5><a href="mailto:info@fundlock.in">Contact Us →</a><a href="tel:+917737309657">Schedule Call →</a><a href="mailto:info@fundlock.in?subject=Application%20Status">Application Status →</a><a href="#faq">Help Center →</a></div>
-      <div class="f-col"><h5>Legal</h5><a href="#">Privacy Policy →</a><a href="#">Terms of Service →</a><a href="#">Investor Terms →</a><a href="#">Cookie Policy →</a></div>
+      <div class="f-col"><h5>Get Started</h5><a href="#applyForm">Apply Now →</a><a href="#faq">FAQ →</a><a href="#process">Timeline →</a></div>
+      <div class="f-col"><h5>Support</h5><a href="mailto:info@fundlock.in">Contact Us →</a><a href="tel:+917737309657">Schedule Call →</a><a href="mailto:info@fundlock.in?subject=Application%20Status">Application Status →</a></div>
+      <div class="f-col"><h5>Legal</h5><a href="/privacy.html">Privacy Policy →</a><a href="/terms.html">Terms of Service →</a><a href="/cookies.html">Cookie Policy →</a></div>
     </div>
     <div class="contacts">
       <div class="contact"><div class="ico ico-sm i-blue"><i data-lucide="mail"></i></div><div><small>Email Us</small><b><a href="mailto:info@fundlock.in">info@fundlock.in</a></b></div></div>
       <div class="contact"><div class="ico ico-sm i-pink"><i data-lucide="phone"></i></div><div><small>Call Us</small><b><a href="tel:+917737309657">+91 77373 09657</a></b></div></div>
       <div class="contact"><div class="ico ico-sm i-green"><i data-lucide="map-pin"></i></div><div><small>Visit Us</small><b>Jaipur · Bangalore · Kolkata</b></div></div>
     </div>
-    <div class="f-bottom"><span>© 2026 FundLock. All rights reserved.</span><nav><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookies</a></nav></div>
+    <div class="f-bottom"><span>© 2026 FundLock. All rights reserved.</span><nav><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/cookies.html">Cookies</a></nav></div>
   </div>
 </footer>
 
@@ -433,7 +455,7 @@
     <h4>Cookie Consent</h4>
     <p>We use cookies to enhance your browsing experience, analyze site traffic, and personalize content. By clicking "Accept", you consent to our use of cookies.</p>
     <div class="acts"><button class="btn btn-primary" data-cookie="accepted">Accept</button><button class="btn btn-ghost" data-cookie="declined">Decline</button></div>
-    <a href="#">Cookie Policy</a>
+    <a href="/cookies.html">Cookie Policy</a>
   </div>
   <button class="x" data-cookie="dismissed" aria-label="Close"><i data-lucide="x"></i></button>
 </div>

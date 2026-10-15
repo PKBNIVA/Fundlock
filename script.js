@@ -1,6 +1,7 @@
 // ---- Content data ----
-const FIRMS = ['Sequoia Capital', 'Accel Partners', 'Matrix Partners', 'Blume Ventures', 'Kalaari Capital', 'Chiratae Ventures',
-  'Elevation Capital', 'Nexus Venture', '3one4 Capital', 'Lightspeed India', 'Peak XV Partners', 'Stellaris Venture'];
+// Types of investors in the network. Swap in real firm names once they've agreed to be listed.
+const FIRMS = ['Angel Networks', 'Seed Funds', 'Venture Capital Funds', 'Family Offices', 'HNI Investors',
+  'Corporate Investors', 'MSME Lenders', 'Government Grant Schemes', 'Incubators', 'Strategic Partners'];
 
 // Investor logos for the "Our Investors" section. Put image files in /investors/ and list them here,
 // e.g. { name: 'Acme Ventures', logo: '/investors/acme.png' }. Empty slots show a placeholder.
@@ -9,7 +10,7 @@ const LOGO_SLOTS = 5;
 
 // [feature, FundLock, Solo]
 const COMPARE = [
-  ['Guaranteed Investment', true, false],
+  ['Committed Investor Access', true, false],
   ['Curated Investor Network', true, false],
   ['Strategic Business Review', true, true],
   ['On-Spot Funding Rounds', true, false],
@@ -131,4 +132,37 @@ cookie.addEventListener('click', (e) => {
   if (!b) return;
   try { localStorage.setItem('fundlock-cookie', b.dataset.cookie); } catch {}
   cookie.classList.remove('show');
+});
+
+// ---- Application form ----
+const form = document.getElementById('appForm');
+const msg = document.getElementById('formMsg');
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
+  }
+  const btn = form.querySelector('button[type=submit]');
+  btn.disabled = true;
+  msg.className = 'form-msg';
+  msg.textContent = 'Submitting…';
+  try {
+    const data = Object.fromEntries(new FormData(form));
+    const res = await fetch('/api/apply', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(out.error || 'Something went wrong');
+    form.reset();
+    msg.className = 'form-msg ok';
+    msg.textContent = "Thanks! Your application is in. We'll get back to you within 5 business days.";
+  } catch (err) {
+    msg.className = 'form-msg err';
+    msg.textContent = `${err.message}. Please try again or email info@fundlock.in.`;
+  } finally {
+    btn.disabled = false;
+  }
 });
