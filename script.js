@@ -3,10 +3,14 @@
 const FIRMS = ['Angel Networks', 'Seed Funds', 'Venture Capital Funds', 'Family Offices', 'HNI Investors',
   'Corporate Investors', 'MSME Lenders', 'Government Grant Schemes', 'Incubators', 'Strategic Partners'];
 
-// Investor logos for the "Our Investors" section. Put image files in /investors/ and list them here,
-// e.g. { name: 'Acme Ventures', logo: '/investors/acme.png' }. Empty slots show a placeholder.
-const INVESTOR_LOGOS = [];
-const LOGO_SLOTS = 5;
+// Investor photos for the "Our Investors" section. Add { name, role, photo } to show a caption.
+const INVESTORS = [
+  { photo: '/assets/investors/investor-1.jpg' },
+  { photo: '/assets/investors/investor-2.jpg' },
+  { photo: '/assets/investors/investor-3.jpg' },
+  { photo: '/assets/investors/investor-4.jpg' },
+  { photo: '/assets/investors/investor-5.jpg' },
+];
 
 // [feature, FundLock, Solo]
 const COMPARE = [
@@ -46,11 +50,11 @@ const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 document.getElementById('firmTrack').innerHTML =
   [...FIRMS, ...FIRMS].map((f) => `<div class="firm">${f}</div>`).join('');
 
-document.getElementById('logoGrid').innerHTML = Array.from({ length: Math.max(LOGO_SLOTS, INVESTOR_LOGOS.length) }, (_, i) => {
-  const inv = INVESTOR_LOGOS[i];
-  if (!inv) return '<div class="card logo-tile placeholder">Investor logo</div>';
-  return `<div class="card logo-tile">${inv.logo ? `<img src="${inv.logo}" alt="${esc(inv.name)}" loading="lazy" />` : esc(inv.name)}</div>`;
-}).join('');
+document.getElementById('logoGrid').innerHTML = INVESTORS.map((inv) => `
+  <figure class="card inv-photo">
+    <img src="${inv.photo}" alt="${esc(inv.name || 'FundLock investor')}" loading="lazy" />
+    ${inv.name ? `<figcaption><b>${esc(inv.name)}</b>${inv.role ? `<span>${esc(inv.role)}</span>` : ''}</figcaption>` : ''}
+  </figure>`).join('');
 
 const mark = (ok) => ok
   ? '<span class="yes"><i data-lucide="check"></i></span>'
