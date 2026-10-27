@@ -141,6 +141,86 @@ cookie.addEventListener('click', (e) => {
 // ---- Application form ----
 const form = document.getElementById('appForm');
 const msg = document.getElementById('formMsg');
+
+// Draft capture: whatever a visitor types is kept in their browser (so they can pick up where they left off)
+// and synced to /api/capture so the team can see unfinished applications. Syncs are debounced while typing,
+// sent right away when a field is completed, and once more with sendBeacon when the visitor leaves the page.
+const store = {
+  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+  del(k) { try { localStorage.removeItem(k); } catch {} },
+};
+const newId = () => (crypto.randomUUID ? crypto.randomUUID()
+  : '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, (c) => (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)));
+const DRAFT_FIELDS = ['name', 'email', 'phone', 'company', 'city', 'sector', 'stage', 'amount', 'website', 'deck', 'about'];
+
+// First-touch attribution: where this visitor originally came from.
+const source = (() => {
+  const saved = store.get('fl-src');
+  if (saved) return saved;
+  const p = new URLSearchParams(location.search);
+  const s = { landing: location.pathname + location.search };
+  if (document.referrer && !document.referrer.startsWith(location.origin)) s.referrer = document.referrer;
+  for (const k of ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'fbclid']) if (p.get(k)) s[k] = p.get(k);
+  store.set('fl-src', s);
+  return s;
+})();
+
+let sid = store.get('fl-app-sid') || newId();
+store.set('fl-app-sid', sid);
+let lastField = null;
+let lastSynced = '';
+let newVisit = true;
+let syncTimer = null;
+
+const draftData = () => {
+  const d = {};
+  for (const k of DRAFT_FIELDS) d[k] = (form.elements[k]?.value || '').trim();
+  return d;
+};
+const isBot = () => !!form.elements.company_url?.value;
+const worthSyncing = (d) => /\S+@\S+/.test(d.email) || d.phone.replace(/\D/g, '').length >= 7 || d.name.length >= 2 || d.company.length >= 2;
+
+function syncDraft(useBeacon = false) {
+  clearTimeout(syncTimer);
+  if (isBot()) return;
+  const data = draftData();
+  const sig = JSON.stringify(data);
+  if (sig === lastSynced || !worthSyncing(data)) return;
+  const body = JSON.stringify({ sid, data, lastField, newVisit, source });
+  if (useBeacon && navigator.sendBeacon) {
+    // text/plain keeps the beacon a simple request; the API parses the JSON string.
+    if (!navigator.sendBeacon('/api/capture', new Blob([body], { type: 'text/plain' }))) return;
+  } else {
+    fetch('/api/capture', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true }).catch(() => {});
+  }
+  lastSynced = sig;
+  newVisit = false;
+}
+
+// Restore a saved draft.
+const saved = store.get('fl-app-draft');
+if (saved && Object.values(saved).some(Boolean)) {
+  for (const k of DRAFT_FIELDS) if (saved[k] && form.elements[k] && !form.elements[k].value) form.elements[k].value = saved[k];
+  msg.className = 'form-msg';
+  msg.textContent = 'Welcome back! We kept the details you entered last time.';
+}
+
+form.addEventListener('input', (e) => {
+  if (!DRAFT_FIELDS.includes(e.target.name)) return;
+  lastField = e.target.name;
+  store.set('fl-app-draft', draftData());
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(syncDraft, 2500);
+});
+form.addEventListener('change', (e) => {
+  if (!DRAFT_FIELDS.includes(e.target.name)) return;
+  lastField = e.target.name;
+  syncDraft();
+});
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') syncDraft(true); });
+window.addEventListener('pagehide', () => syncDraft(true));
+
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   if (!form.checkValidity()) {
@@ -152,7 +232,8 @@ form.addEventListener('submit', async (e) => {
   msg.className = 'form-msg';
   msg.textContent = 'Submitting…';
   try {
-    const data = Object.fromEntries(new FormData(form));
+    clearTimeout(syncTimer);
+    const data = { ...Object.fromEntries(new FormData(form)), sid, source };
     const res = await fetch('/api/apply', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -161,6 +242,12 @@ form.addEventListener('submit', async (e) => {
     const out = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(out.error || 'Something went wrong');
     form.reset();
+    // Start fresh: the draft is now a submitted application.
+    store.del('fl-app-draft');
+    sid = newId();
+    store.set('fl-app-sid', sid);
+    lastSynced = JSON.stringify(draftData());
+    newVisit = true;
     msg.className = 'form-msg ok';
     msg.textContent = "Thanks! Your application is in. We'll get back to you within 5 business days.";
   } catch (err) {

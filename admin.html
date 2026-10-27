@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>FundLock Admin</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --bg:#f6f7fb;--surface:#fff;--line:#e6e8f0;--line2:#eef0f5;--text:#141a2e;--muted:#5f6680;--dim:#8a90a8;
+      --accent:#6d28d9;--accent-soft:#f1ebff;--grad:linear-gradient(90deg,#2563eb,#9333ea);
+      --green:#15803d;--green-soft:#e8f7ee;--amber:#b45309;--amber-soft:#fff4e0;--red:#b91c1c;--red-soft:#fdecec;--blue:#1d4ed8;--blue-soft:#e8efff;
+      --shadow:0 1px 2px rgba(20,26,46,.05),0 4px 16px -6px rgba(20,26,46,.08);
+    }
+    body{font-family:Inter,system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+    button,input,select,textarea{font:inherit;color:inherit}
+    button{cursor:pointer;border:0;background:none}
+    a{color:var(--blue);text-decoration:none}
+    a:hover{text-decoration:underline}
+    [hidden]{display:none!important}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9px;border:1px solid var(--line);background:var(--surface);font-weight:500;font-size:13.5px;white-space:nowrap}
+    .btn:hover{border-color:#cfd3e2}
+    .btn-primary{background:var(--grad);color:#fff;border:0}
+    .btn-danger{color:var(--red);border-color:#f3c9c9}
+    .btn svg{width:16px;height:16px}
+
+    /* login */
+    .login{min-height:100vh;display:grid;place-items:center;padding:16px}
+    .login form{width:100%;max-width:360px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:32px 28px;box-shadow:var(--shadow);display:grid;gap:16px}
+    .login .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
+    .login .brand img{width:36px;height:36px;border-radius:10px}
+    .login p{color:var(--muted);font-size:13.5px}
+    .field{display:grid;gap:6px;font-size:13px;color:var(--muted)}
+    .field input,.field select,.field textarea{border:1px solid var(--line);border-radius:9px;padding:10px 12px;background:#fff;width:100%}
+    .field input:focus,.field select:focus,.field textarea:focus,.search:focus{outline:none;border-color:#a78bfa;box-shadow:0 0 0 3px rgba(139,92,246,.18)}
+    .login .btn-primary{justify-content:center;padding:11px}
+    .err{color:var(--red);font-size:13px;min-height:18px}
+
+    /* app shell */
+    header.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+    .top .in{max-width:1320px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:12px}
+    .top .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;margin-right:auto}
+    .top .brand img{width:30px;height:30px;border-radius:8px}
+    .top .brand small{font-weight:500;color:var(--dim);font-size:12px}
+    main{max-width:1320px;margin:0 auto;padding:22px 24px 60px}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+    .stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)}
+    .stat b{display:block;font-size:28px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+    .stat span{color:var(--muted);font-size:13px}
+    .stat em{font-style:normal;font-size:12px;color:var(--dim);display:block;margin-top:2px}
+    .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+    .tabs{display:flex;background:#eceef5;border-radius:10px;padding:3px}
+    .tabs button{padding:7px 14px;border-radius:8px;font-weight:500;color:var(--muted);font-size:13.5px}
+    .tabs button[aria-selected=true]{background:#fff;color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+    .tabs .n{font-size:12px;color:var(--dim);margin-left:4px;font-variant-numeric:tabular-nums}
+    .search{flex:1;min-width:200px;border:1px solid var(--line);border-radius:9px;padding:8px 12px;background:#fff}
+    .filter{border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:#fff}
+    .hint{color:var(--dim);font-size:12.5px;margin:-4px 0 10px}
+
+    .table{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+    table{width:100%;border-collapse:collapse}
+    th{text-align:left;font-size:12px;font-weight:600;color:var(--muted);background:#fafbfd;padding:10px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+    td{padding:12px 14px;border-bottom:1px solid var(--line2);vertical-align:top}
+    tbody tr{cursor:pointer}
+    tbody tr:hover{background:#fafaff}
+    tbody tr:last-child td{border-bottom:0}
+    .who b{display:block;font-weight:600}
+    .who span{display:block;color:var(--muted);font-size:12.5px;word-break:break-all}
+    .sub{color:var(--muted);font-size:12.5px}
+    .when{white-space:nowrap}
+    .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:500;white-space:nowrap}
+    .p-new{background:var(--blue-soft);color:var(--blue)}
+    .p-contacted{background:var(--amber-soft);color:var(--amber)}
+    .p-shortlisted{background:var(--green-soft);color:var(--green)}
+    .p-rejected{background:#f0f1f5;color:var(--muted)}
+    .p-unreg{background:var(--amber-soft);color:var(--amber)}
+    .p-sub{background:var(--green-soft);color:var(--green)}
+    .p-conv{background:#f0f1f5;color:var(--muted)}
+    .p-warn{background:var(--red-soft);color:var(--red)}
+    .bar{width:90px;height:6px;border-radius:9px;background:#eceef5;overflow:hidden;margin-top:5px}
+    .bar i{display:block;height:100%;background:var(--grad);border-radius:9px}
+    .empty{padding:48px 16px;text-align:center;color:var(--muted)}
+
+    /* drawer */
+    .scrim{position:fixed;inset:0;background:rgba(20,26,46,.35);z-index:40}
+    .drawer{position:fixed;top:0;right:0;bottom:0;width:min(560px,100%);background:var(--surface);z-index:41;box-shadow:-10px 0 40px rgba(20,26,46,.15);display:flex;flex-direction:column}
+    .drawer .dh{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:flex-start}
+    .drawer .dh h2{font-size:18px;line-height:1.25}
+    .drawer .dh p{color:var(--muted);font-size:13px;margin-top:2px}
+    .drawer .dh .x{margin-left:auto;padding:6px;border-radius:8px}
+    .drawer .dh .x:hover{background:#f2f3f8}
+    .drawer .db{padding:18px 22px;overflow:auto;display:grid;gap:18px}
+    .quick{display:flex;flex-wrap:wrap;gap:8px}
+    .kv{display:grid;grid-template-columns:150px 1fr;gap:8px 14px;font-size:13.5px}
+    .kv dt{color:var(--muted)}
+    .kv dd{word-break:break-word;white-space:pre-wrap}
+    .sec h3{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);margin-bottom:10px;font-weight:600}
+    .row2{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}
+    .saved{font-size:12.5px;color:var(--green)}
+    .confirm{background:var(--red-soft);border:1px solid #f3c9c9;border-radius:10px;padding:12px 14px;display:grid;gap:10px;font-size:13.5px}
+    .confirm div{display:flex;gap:8px}
+    .toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#141a2e;color:#fff;padding:9px 16px;border-radius:9px;font-size:13px;z-index:60}
+
+    @media (max-width:900px){
+      .stats{grid-template-columns:repeat(2,1fr)}
+      .top .in,main{padding-left:16px;padding-right:16px}
+      .top .lbl,#updated,.top .brand small{display:none}
+      .top .in{gap:8px}
+      .top .btn{padding:8px 10px}
+      thead{display:none}
+      table,tbody,tr,td{display:block;width:100%}
+      tbody tr{padding:12px 14px;border-bottom:1px solid var(--line2)}
+      td{border:0;padding:3px 0}
+      td[data-k]::before{content:attr(data-k) ": ";color:var(--dim);font-size:12px}
+      .kv{grid-template-columns:1fr}
+      .kv dt{margin-top:6px}
+    }
+  </style>
+</head>
+<body>
+
+<!-- Login -->
+<section class="login" id="loginView" hidden>
+  <form id="loginForm">
+    <div class="brand"><img src="/assets/brand/logo-mark.png" alt="" /> FundLock Admin</div>
+    <p>Sign in to view applications and unfinished sign-ups.</p>
+    <label class="field">Password<input type="password" name="password" autocomplete="current-password" required autofocus /></label>
+    <div class="err" id="loginErr" role="alert"></div>
+    <button class="btn btn-primary" type="submit">Sign in</button>
+  </form>
+</section>
+
+<!-- Dashboard -->
+<div id="appView" hidden>
+  <header class="top">
+    <div class="in">
+      <div class="brand"><img src="/assets/brand/logo-mark.png" alt="" /> FundLock <small>Admin</small></div>
+      <span class="sub" id="updated"></span>
+      <button class="btn" id="refreshBtn" title="Refresh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg><span class="lbl">Refresh</span></button>
+      <a class="btn" id="exportBtn" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg><span class="lbl">Export CSV</span></a>
+      <button class="btn" id="logoutBtn"><span>Sign out</span></button>
+    </div>
+  </header>
+  <main>
+    <div class="stats" id="stats"></div>
+    <div class="toolbar">
+      <div class="tabs" role="tablist" id="tabs">
+        <button role="tab" data-view="submitted" aria-selected="true">Applications<span class="n" data-n="submitted"></span></button>
+        <button role="tab" data-view="unregistered" aria-selected="false">Unregistered<span class="n" data-n="unregistered"></span></button>
+        <button role="tab" data-view="all" aria-selected="false">All<span class="n" data-n="all"></span></button>
+      </div>
+      <input class="search" id="search" type="search" placeholder="Search name, email, phone, company, city…" />
+      <select class="filter" id="reviewFilter" aria-label="Review status">
+        <option value="">Any review status</option>
+        <option value="new">New</option><option value="contacted">Contacted</option>
+        <option value="shortlisted">Shortlisted</option><option value="rejected">Rejected</option>
+      </select>
+    </div>
+    <p class="hint" id="hint"></p>
+    <div class="table"><table><thead id="thead"></thead><tbody id="tbody"></tbody></table><div class="empty" id="empty" hidden></div></div>
+  </main>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" hidden aria-modal="true" role="dialog"></aside>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const LABELS = { name: 'Founder name', email: 'Email', phone: 'Phone', company: 'Startup / company', city: 'City', sector: 'Sector', stage: 'Stage', amount: 'Funding required', website: 'Website', deck: 'Pitch deck', about: 'About the business' };
+const REVIEW = { new: 'New', contacted: 'Contacted', shortlisted: 'Shortlisted', rejected: 'Rejected' };
+const state = { leads: [], counts: {}, view: 'submitted', q: '', review: '', openId: null };
+
+const fmtIST = (d) => d ? new Date(d).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }) : '–';
+function ago(d) {
+  if (!d) return '–';
+  const s = (Date.now() - new Date(d)) / 1000;
+  if (s < 60) return 'just now';
+  if (s < 3600) return Math.floor(s / 60) + ' min ago';
+  if (s < 86400) return Math.floor(s / 3600) + ' h ago';
+  if (s < 86400 * 7) return Math.floor(s / 86400) + ' d ago';
+  return fmtIST(d);
+}
+const safeUrl = (u) => { try { const x = new URL(/^https?:\/\//i.test(u) ? u : 'https://' + u); return /^https?:$/.test(x.protocol) ? x.href : null; } catch { return null; } };
+const digits = (p) => String(p || '').replace(/\D/g, '');
+const waNumber = (p) => { const d = digits(p); return d.length === 10 ? '91' + d : d.length >= 11 ? d.replace(/^0+/, '') : null; };
+function toast(t) { const el = $('#toast'); el.textContent = t; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => (el.hidden = true), 2200); }
+
+async function api(path, opts = {}) {
+  const res = await fetch(path, { credentials: 'same-origin', ...opts, headers: { 'Content-Type': 'application/json', ...(opts.headers || {}) } });
+  const out = await res.json().catch(() => ({}));
+  if (res.status === 401 && path !== '/api/admin/session') { showLogin(); throw new Error('Signed out'); }
+  if (!res.ok) throw new Error(out.error || 'Request failed');
+  return out;
+}
+
+// ---- auth ----
+function showLogin(msg) { $('#appView').hidden = true; $('#loginView').hidden = false; $('#loginErr').textContent = msg || ''; }
+function showApp() { $('#loginView').hidden = true; $('#appView').hidden = false; load(); }
+$('#loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = e.target.querySelector('button'); btn.disabled = true; $('#loginErr').textContent = '';
+  try {
+    await api('/api/admin/session', { method: 'POST', body: JSON.stringify({ password: e.target.password.value }) });
+    e.target.reset(); showApp();
+  } catch (err) { $('#loginErr').textContent = err.message; }
+  finally { btn.disabled = false; }
+});
+$('#logoutBtn').addEventListener('click', async () => { await api('/api/admin/session', { method: 'DELETE' }).catch(() => {}); showLogin(); });
+
+// ---- data ----
+async function load(quiet) {
+  try {
+    const data = await api('/api/admin/leads');
+    state.leads = data.leads; state.counts = data.counts;
+    $('#updated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: '2-digit' });
+    render();
+    if (state.openId) { const l = state.leads.find((x) => x.id === state.openId); if (l && !quiet) openDrawer(l.id, true); }
+  } catch (err) { if (err.message !== 'Signed out') toast(err.message); }
+}
+$('#refreshBtn').addEventListener('click', () => load());
+setInterval(() => { if (!document.hidden && !$('#appView').hidden && $('#drawer').hidden) load(true); }, 60000);
+
+function inView(l) {
+  if (state.view === 'submitted' && l.status !== 'submitted') return false;
+  if (state.view === 'unregistered' && (l.status !== 'unregistered' || l.converted)) return false;
+  if (state.review && (l.status !== 'submitted' || l.admin_status !== state.review)) return false;
+  if (state.q) {
+    const hay = [l.name, l.email, l.phone, l.company, l.city, l.sector, l.notes].join(' ').toLowerCase();
+    const qd = digits(state.q);
+    if (!hay.includes(state.q) && !(qd.length >= 4 && digits(l.phone).includes(qd))) return false;
+  }
+  return true;
+}
+
+function render() {
+  const c = state.counts;
+  $('#stats').innerHTML = `
+    <div class="stat"><span>Applications</span><b>${c.submitted ?? 0}</b><em>${c.submittedToday ?? 0} today</em></div>
+    <div class="stat"><span>New to review</span><b>${c.newToReview ?? 0}</b><em>not yet contacted</em></div>
+    <div class="stat"><span>Unregistered</span><b>${c.unregistered ?? 0}</b><em>${c.unregisteredReachable ?? 0} with email or phone</em></div>
+    <div class="stat"><span>Drafts that converted</span><b>${c.converted ?? 0}</b><em>started, then submitted</em></div>`;
+  $('[data-n=submitted]').textContent = c.submitted ?? 0;
+  $('[data-n=unregistered]').textContent = c.unregistered ?? 0;
+  $('[data-n=all]').textContent = state.leads.length;
+  $('#reviewFilter').hidden = state.view === 'unregistered';
+  $('#hint').textContent = state.view === 'unregistered'
+    ? 'People who started the application form but did not submit. Saved automatically as they type; anyone who later submitted is moved out of this list.'
+    : '';
+  $('#exportBtn').href = '/api/admin/leads?format=csv&view=' + state.view;
+
+  const list = state.leads.filter(inView);
+  const unreg = state.view === 'unregistered';
+  $('#thead').innerHTML = unreg
+    ? '<tr><th>Last activity</th><th>Person</th><th>Company</th><th>Progress</th><th>Visits</th><th>Source</th><th>Location</th></tr>'
+    : '<tr><th>Date</th><th>Founder</th><th>Company</th><th>Stage</th><th>Funding</th><th>City</th><th>Status</th></tr>';
+  $('#tbody').innerHTML = list.map((l) => {
+    const who = `<div class="who"><b>${esc(l.name || 'No name yet')}</b><span>${esc(l.email || '')}</span><span>${esc(l.phone || '')}</span></div>`;
+    const comp = `<div class="who"><b>${esc(l.company || '–')}</b><span>${esc(l.sector || '')}</span></div>`;
+    if (unreg) {
+      return `<tr data-id="${l.id}">
+        <td class="when" data-k="Last activity">${ago(l.last_seen)}</td><td>${who}</td><td data-k="Company">${comp}</td>
+        <td data-k="Progress">${l.completion}%<div class="bar"><i style="width:${l.completion}%"></i></div>${l.last_field ? `<span class="sub">stopped at ${esc(LABELS[l.last_field] || l.last_field)}</span>` : ''}</td>
+        <td data-k="Visits">${l.visits}</td><td data-k="Source" class="sub">${esc(l.source_text)}</td>
+        <td data-k="Location" class="sub">${esc(l.region || l.country || '–')}<br>${esc(l.device || '')}</td></tr>`;
+    }
+    const status = l.status === 'submitted'
+      ? `<span class="pill p-${l.admin_status}">${REVIEW[l.admin_status] || l.admin_status}</span>${l.email_status === 'failed' ? ' <span class="pill p-warn" title="Confirmation emails failed to send">email failed</span>' : ''}`
+      : `<span class="pill ${l.converted ? 'p-conv' : 'p-unreg'}">${l.converted ? 'Draft (converted)' : 'Unregistered ' + l.completion + '%'}</span>`;
+    return `<tr data-id="${l.id}">
+      <td class="when" data-k="Date">${fmtIST(l.submitted_at || l.last_seen)}</td><td>${who}</td><td data-k="Company">${comp}</td>
+      <td data-k="Stage">${esc(l.stage || '–')}</td><td data-k="Funding">${esc(l.amount || '–')}</td><td data-k="City">${esc(l.city || '–')}</td>
+      <td data-k="Status">${status}</td></tr>`;
+  }).join('');
+  const empty = $('#empty');
+  empty.hidden = list.length > 0;
+  empty.textContent = state.q || state.review ? 'Nothing matches your search.' : unreg ? 'No unfinished applications yet.' : 'No applications yet.';
+}
+
+$('#tabs').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-view]'); if (!b) return;
+  state.view = b.dataset.view;
+  for (const t of document.querySelectorAll('#tabs [data-view]')) t.setAttribute('aria-selected', t === b);
+  render();
+});
+$('#search').addEventListener('input', (e) => { state.q = e.target.value.trim().toLowerCase(); render(); });
+$('#reviewFilter').addEventListener('change', (e) => { state.review = e.target.value; render(); });
+$('#tbody').addEventListener('click', (e) => { const tr = e.target.closest('tr[data-id]'); if (tr) openDrawer(tr.dataset.id); });
+
+// ---- detail drawer ----
+function closeDrawer() { $('#drawer').hidden = true; $('#scrim').hidden = true; state.openId = null; }
+$('#scrim').addEventListener('click', closeDrawer);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('#drawer').hidden) closeDrawer(); });
+
+function openDrawer(id, keepScroll) {
+  const l = state.leads.find((x) => x.id === id); if (!l) return;
+  state.openId = id;
+  const d = $('#drawer');
+  const scroll = keepScroll ? d.querySelector('.db')?.scrollTop : 0;
+  const wa = waNumber(l.phone);
+  const greet = l.status === 'submitted'
+    ? `Hi ${l.name || ''}, this is the FundLock team about your application for ${l.company || 'your startup'}.`
+    : `Hi ${l.name || ''}, this is the FundLock team. We noticed you started an application${l.company ? ' for ' + l.company : ''}. Can we help you finish it?`;
+  const link = (k) => { const u = safeUrl(l[k] || ''); return u ? `<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(l[k])}</a>` : esc(l[k]); };
+  const rows = Object.keys(LABELS).filter((k) => l[k]).map((k) =>
+    `<dt>${LABELS[k]}</dt><dd>${k === 'website' || k === 'deck' ? link(k) : k === 'email' ? `<a href="mailto:${esc(l.email)}">${esc(l.email)}</a>` : k === 'phone' ? `<a href="tel:${esc(digits(l.phone))}">${esc(l.phone)}</a>` : esc(l[k])}</dd>`).join('');
+  const src = l.source || {};
+  const srcRows = [['Came from', l.source_text], ['Landing page', src.landing], ['Referrer', src.referrer], ['Location', [l.region, l.country].filter(Boolean).join(' · ')], ['Device', l.device]]
+    .filter(([, v]) => v).map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
+  const timeline = [['First seen', fmtIST(l.first_seen)], ['Last activity', fmtIST(l.last_seen)], l.submitted_at && ['Submitted', fmtIST(l.submitted_at)], ['Visits', l.visits],
+    l.status === 'unregistered' && ['Completion', `${l.completion}%${l.last_field ? ' · stopped at ' + (LABELS[l.last_field] || l.last_field) : ''}`],
+    l.email_status && ['Emails', l.email_status === 'sent' ? 'Team notification and confirmation sent' : 'Sending failed – follow up manually']]
+    .filter(Boolean).map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
+
+  d.innerHTML = `
+    <div class="dh"><div><h2>${esc(l.company || l.name || 'Unnamed draft')}</h2>
+      <p>${l.status === 'submitted' ? 'Application' : l.converted ? 'Draft – this person later submitted' : 'Unregistered – did not submit'} · ${esc(l.name || '')}</p></div>
+      <button class="x" id="closeBtn" aria-label="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+    <div class="db">
+      <div class="quick">
+        ${l.email ? `<a class="btn" href="mailto:${esc(l.email)}?subject=${encodeURIComponent('Your FundLock application')}&body=${encodeURIComponent(greet)}">Email</a>` : ''}
+        ${digits(l.phone).length >= 7 ? `<a class="btn" href="tel:${esc(digits(l.phone))}">Call</a>` : ''}
+        ${wa ? `<a class="btn" href="https://wa.me/${wa}?text=${encodeURIComponent(greet)}" target="_blank" rel="noopener">WhatsApp</a>` : ''}
+      </div>
+      <div class="sec"><h3>Details</h3><dl class="kv">${rows || '<dd class="sub">Nothing entered yet.</dd>'}</dl></div>
+      <div class="sec"><h3>Activity</h3><dl class="kv">${timeline}</dl></div>
+      ${srcRows ? `<div class="sec"><h3>Source</h3><dl class="kv">${srcRows}</dl></div>` : ''}
+      <div class="sec"><h3>Follow-up</h3>
+        <div style="display:grid;gap:10px">
+          <label class="field">Review status<select id="dStatus">${Object.entries(REVIEW).map(([k, v]) => `<option value="${k}" ${l.admin_status === k ? 'selected' : ''}>${v}</option>`).join('')}</select></label>
+          <label class="field">Notes<textarea id="dNotes" rows="4" placeholder="Call notes, next steps…">${esc(l.notes || '')}</textarea></label>
+          <div class="row2"><span class="saved" id="dSaved"></span><button class="btn btn-primary" id="dSave">Save</button></div>
+        </div>
+      </div>
+      <div class="sec"><h3>Danger zone</h3>
+        <button class="btn btn-danger" id="dDel">Delete this record</button>
+        <div class="confirm" id="dConfirm" hidden><span>Permanently delete ${esc(l.name || 'this record')}${l.company ? ' (' + esc(l.company) + ')' : ''}? Use this for spam or when someone asks to have their data erased.</span>
+          <div><button class="btn btn-danger" id="dDelYes">Yes, delete</button><button class="btn" id="dDelNo">Cancel</button></div></div>
+      </div>
+    </div>`;
+  d.hidden = false; $('#scrim').hidden = false;
+  d.querySelector('.db').scrollTop = scroll || 0;
+  $('#closeBtn').onclick = closeDrawer;
+  $('#dSave').onclick = async () => {
+    try {
+      await api('/api/admin/leads', { method: 'PATCH', body: JSON.stringify({ id, admin_status: $('#dStatus').value, notes: $('#dNotes').value }) });
+      Object.assign(l, { admin_status: $('#dStatus').value, notes: $('#dNotes').value });
+      $('#dSaved').textContent = 'Saved'; render();
+    } catch (err) { toast(err.message); }
+  };
+  $('#dDel').onclick = () => { $('#dConfirm').hidden = false; $('#dDel').hidden = true; };
+  $('#dDelNo').onclick = () => { $('#dConfirm').hidden = true; $('#dDel').hidden = false; };
+  $('#dDelYes').onclick = async () => {
+    try {
+      await api('/api/admin/leads', { method: 'DELETE', body: JSON.stringify({ id }) });
+      state.leads = state.leads.filter((x) => x.id !== id); closeDrawer(); load(); toast('Deleted');
+    } catch (err) { toast(err.message); }
+  };
+}
+
+// ---- start ----
+fetch('/api/admin/session', { credentials: 'same-origin' }).then((r) => r.json()).then((s) => {
+  if (!s.configured) return showLogin('Admin login is not set up yet. Add ADMIN_PASSWORD in Vercel and redeploy.');
+  s.loggedIn ? showApp() : showLogin();
+}).catch(() => showLogin('Could not reach the server.'));
+</script>
+</body>
+</html>
