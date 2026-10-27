@@ -74,7 +74,7 @@ async function sendEmails(data) {
     htmlContent: `<div style="font-family:Arial,sans-serif;font-size:15px;line-height:1.6;color:#222">
       <p>Hi ${esc(data.name)},</p>
       <p>Thanks for applying to FundLock with <b>${esc(data.company)}</b>. Our team reviews every application and will get back to you within 5 business days.</p>
-      <p>Applications close on 30 October. If you have questions in the meantime, just reply to this email or call us on +91 77373 09657.</p>
+      <p>Applications close on 15 November. If you have questions in the meantime, just reply to this email or call us on +91 77373 09657.</p>
       <p>Team FundLock<br><a href="https://www.fundlock.in">www.fundlock.in</a></p></div>`,
   });
 
