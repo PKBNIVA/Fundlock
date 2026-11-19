@@ -59,7 +59,7 @@ document.getElementById('logoGrid').innerHTML = INVESTORS.map((inv) => `
 const mark = (ok) => ok
   ? '<span class="yes"><i data-lucide="check"></i></span>'
   : '<span class="no"><i data-lucide="x"></i></span>';
-document.querySelector('#compareTable .table-cta').insertAdjacentHTML('beforebegin',
+document.querySelector('#compareTable .table-cta')?.insertAdjacentHTML('beforebegin',
   COMPARE.map(([f, a, b]) => `<div class="row"><span>${esc(f)}</span><span class="c">${mark(a)}</span><span class="c">${mark(b)}</span></div>`).join(''));
 
 const faqList = document.getElementById('faqList');
@@ -91,8 +91,15 @@ onScroll();
 toTop.addEventListener('click', () => scrollTo({ top: 0, behavior: 'smooth' }));
 
 const nav = document.getElementById('nav');
-document.getElementById('menuBtn').addEventListener('click', () => nav.classList.toggle('open'));
-nav.addEventListener('click', (e) => { if (e.target.closest('a')) nav.classList.remove('open'); });
+const menuBtn = document.getElementById('menuBtn');
+const setMenu = (open) => {
+  nav.classList.toggle('open', open);
+  menuBtn.setAttribute('aria-expanded', open);
+  menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+};
+menuBtn.addEventListener('click', () => setMenu(!nav.classList.contains('open')));
+nav.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false); });
+addEventListener('keydown', (e) => { if (e.key === 'Escape' && nav.classList.contains('open')) { setMenu(false); menuBtn.focus(); } });
 
 // ---- Reveal, counters, bars ----
 const countUp = (el) => {
@@ -250,6 +257,7 @@ form.addEventListener('submit', async (e) => {
     newVisit = true;
     msg.className = 'form-msg ok';
     msg.textContent = "Thanks! Your application is in. We'll get back to you within 5 business days.";
+    msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
   } catch (err) {
     msg.className = 'form-msg err';
     msg.textContent = `${err.message}. Please try again or email info@fundlock.in.`;
@@ -257,3 +265,12 @@ form.addEventListener('submit', async (e) => {
     btn.disabled = false;
   }
 });
+
+// ---- Sticky apply button (mobile): shown after the hero, hidden while the form is on screen ----
+const sticky = document.getElementById('stickyCta');
+if (sticky) {
+  let pastHero = false, formVisible = false;
+  const upd = () => sticky.classList.toggle('show', pastHero && !formVisible);
+  new IntersectionObserver(([e]) => { pastHero = !e.isIntersecting; upd(); }).observe(document.getElementById('hero'));
+  new IntersectionObserver(([e]) => { formVisible = e.isIntersecting; upd(); }).observe(document.getElementById('applyForm'));
+}
