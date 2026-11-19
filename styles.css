@@ -806,3 +806,7 @@ body.menu-open{overflow:hidden}
 .li{background:var(--ink);color:var(--gold-lt);border:1px solid rgba(212,166,74,.4)}
 .li:hover{background:#000}
 @media (orientation:landscape) and (max-height:500px){.hero .sub{display:none}.hero .lead{margin-bottom:18px}.hero h1{margin:10px 0 12px;font-size:clamp(28px,5vw,38px)}.hero{padding:76px 0 32px}}
+.inv-photo figcaption{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;background:linear-gradient(transparent,rgba(11,11,15,.88))}
+.inv-photo figcaption span{display:block;font-size:12px;color:#d9d6cc}
+.inv-photo figcaption .li{width:32px;height:32px;flex-shrink:0}
+.inv-photo figcaption .li svg{width:16px;height:16px}

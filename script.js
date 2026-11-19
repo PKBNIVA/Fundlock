@@ -3,13 +3,15 @@
 const FIRMS = ['Angel Networks', 'Seed Funds', 'Venture Capital Funds', 'Family Offices', 'HNI Investors',
   'Corporate Investors', 'MSME Lenders', 'Government Grant Schemes', 'Incubators', 'Strategic Partners'];
 
-// Investor photos for the "Our Investors" section. Add { name, role, photo } to show a caption.
+// Investor photos for the "Our Investors" section.
+// Fill in name, role (e.g. "Partner, XYZ Ventures") and linkedin (full https://www.linkedin.com/in/... URL)
+// for each photo; a caption and LinkedIn button appear automatically once a name is set.
 const INVESTORS = [
-  { photo: '/assets/investors/investor-1.jpg' },
-  { photo: '/assets/investors/investor-2.jpg' },
-  { photo: '/assets/investors/investor-3.jpg' },
-  { photo: '/assets/investors/investor-4.jpg' },
-  { photo: '/assets/investors/investor-5.jpg' },
+  { photo: '/assets/investors/investor-1.jpg', name: '', role: '', linkedin: '' },
+  { photo: '/assets/investors/investor-2.jpg', name: '', role: '', linkedin: '' },
+  { photo: '/assets/investors/investor-3.jpg', name: '', role: '', linkedin: '' },
+  { photo: '/assets/investors/investor-4.jpg', name: '', role: '', linkedin: '' },
+  { photo: '/assets/investors/investor-5.jpg', name: '', role: '', linkedin: '' },
 ];
 
 // [feature, FundLock, Solo]
@@ -45,7 +47,7 @@ const FAQS = [
 ];
 
 // ---- Render ----
-const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 // The list is repeated once so the loop is seamless; the copy is hidden from screen readers.
 document.getElementById('firmTrack').innerHTML =
@@ -55,7 +57,10 @@ document.getElementById('firmTrack').innerHTML =
 document.getElementById('logoGrid').innerHTML = INVESTORS.map((inv) => `
   <figure class="card inv-photo">
     <img src="${inv.photo}" width="480" height="600" alt="${esc(inv.name || 'FundLock investor')}" loading="lazy" />
-    ${inv.name ? `<figcaption><b>${esc(inv.name)}</b>${inv.role ? `<span>${esc(inv.role)}</span>` : ''}</figcaption>` : ''}
+    ${inv.name ? `<figcaption><div><b>${esc(inv.name)}</b>${inv.role ? `<span>${esc(inv.role)}</span>` : ''}</div>${
+      /^https:\/\/([a-z]{2,3}\.)?linkedin\.com\//.test(inv.linkedin || '')
+        ? `<a class="li" href="${esc(inv.linkedin)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(inv.name)} on LinkedIn (opens in a new tab)"><i data-lucide="linkedin"></i></a>` : ''
+    }</figcaption>` : ''}
   </figure>`).join('');
 
 const mark = (ok) => ok
