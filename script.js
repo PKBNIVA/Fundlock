@@ -59,7 +59,7 @@ document.getElementById('logoGrid').innerHTML = INVESTORS.map((inv) => `
 const mark = (ok) => ok
   ? '<span class="yes"><i data-lucide="check"></i></span>'
   : '<span class="no"><i data-lucide="x"></i></span>';
-document.querySelector('#compareTable .table-cta').insertAdjacentHTML('beforebegin',
+document.querySelector('#compareTable .table-cta')?.insertAdjacentHTML('beforebegin',
   COMPARE.map(([f, a, b]) => `<div class="row"><span>${esc(f)}</span><span class="c">${mark(a)}</span><span class="c">${mark(b)}</span></div>`).join(''));
 
 const faqList = document.getElementById('faqList');
@@ -265,3 +265,12 @@ form.addEventListener('submit', async (e) => {
     btn.disabled = false;
   }
 });
+
+// ---- Sticky apply button (mobile): shown after the hero, hidden while the form is on screen ----
+const sticky = document.getElementById('stickyCta');
+if (sticky) {
+  let pastHero = false, formVisible = false;
+  const upd = () => sticky.classList.toggle('show', pastHero && !formVisible);
+  new IntersectionObserver(([e]) => { pastHero = !e.isIntersecting; upd(); }).observe(document.getElementById('hero'));
+  new IntersectionObserver(([e]) => { formVisible = e.isIntersecting; upd(); }).observe(document.getElementById('applyForm'));
+}
