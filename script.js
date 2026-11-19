@@ -21,7 +21,7 @@ const COMPARE = [
   ['Ecosystem Partnerships', true, false],
   ['Government Grant Access', true, false],
   ['Marketing Solutions & Website Development', true, false],
-  ['Open to All Startups', false, true],
+  ['Curated, Selective Cohort', true, false],
   ['Post-Investment Guidance', true, false],
 ];
 
@@ -33,9 +33,9 @@ const FAQS = [
   ['How much funding do startups typically raise?',
     'It varies based on stage and needs. Our investors typically write checks of ₹1.5 Crore or more for MSMEs and ₹50 Lakhs or more for startups. But remember, we make introductions. Final funding amounts depend on your business and investor interest.'],
   ["What's the timeline from application to funding?",
-    "Selection takes about 25-30 days from application to decision. If selected, you'll start meeting investors within 2-3 weeks. Fundraising itself typically takes another 30 days, depending on due diligence and negotiations. So roughly 2 months total."],
+    "Application to selection and onboarding takes about 30 days. After that, fundraising typically takes another 30 days, depending on due diligence and negotiations. So roughly 60 days in total."],
   ['What is the program fee?',
-    'The total program fee is ₹1,00,000 (₹1 Lac) plus applicable taxes for the entire process. This covers onboarding, evaluations, mentoring, documentation support, financial modelling, website assistance, founder bootcamps, investor readiness activities, investor mapping, conclave participation, networking sessions, and capital access facilitation.'],
+    'Applying is free. For selected startups, the total program fee is ₹1,00,000 (₹1 Lac) plus applicable taxes for the entire process. This covers onboarding, evaluations, mentoring, documentation support, financial modelling, website assistance, founder bootcamps, investor readiness activities, investor mapping, conclave participation, networking sessions, and capital access facilitation.'],
   ['What support do you provide beyond investor intros?',
     "We'll review your pitch deck, help you prep for meetings, connect you with relevant mentors, and be available for questions throughout your fundraising. You'll also join our founder community for peer support. Think of us as your fundraising co-pilot."],
   ['Do you help with government grants or incubation programs?',

@@ -49,7 +49,7 @@ async function save(data, body, req) {
   return id;
 }
 
-async function sendEmails(data) {
+async function sendEmails(data, saved) {
   const sender = { name: 'FundLock', email: process.env.BREVO_SENDER_EMAIL || 'info@fundlock.in' };
   const notify = process.env.NOTIFY_EMAIL || 'info@fundlock.in';
   const rows = Object.entries(FIELDS)
@@ -62,7 +62,7 @@ async function sendEmails(data) {
     to: [{ email: notify }],
     replyTo: { email: data.email, name: data.name },
     subject: `New application: ${data.company} (${data.stage})`,
-    htmlContent: `<h2>New FundLock application</h2><table style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:14px">${rows}</table><p style="font-family:Arial,sans-serif;font-size:13px;color:#555">All applications: <a href="https://www.fundlock.in/admin">fundlock.in/admin</a></p>`,
+    htmlContent: `<h2>New FundLock application</h2>${saved ? '' : '<p style="font-family:Arial,sans-serif;color:#b91c1c"><b>Warning:</b> this application could not be saved to the database and will not appear in the admin panel. Keep this email.</p>'}<table style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:14px">${rows}</table><p style="font-family:Arial,sans-serif;font-size:13px;color:#555">All applications: <a href="https://www.fundlock.in/admin">fundlock.in/admin</a></p>`,
   });
 
   // 2. Confirmation to the founder
@@ -74,7 +74,7 @@ async function sendEmails(data) {
     htmlContent: `<div style="font-family:Arial,sans-serif;font-size:15px;line-height:1.6;color:#222">
       <p>Hi ${esc(data.name)},</p>
       <p>Thanks for applying to FundLock with <b>${esc(data.company)}</b>. Our team reviews every application and will get back to you within 5 business days.</p>
-      <p>Applications close on 15 November. If you have questions in the meantime, just reply to this email or call us on +91 77373 09657.</p>
+      <p>Applications close on 31 December. If you have questions in the meantime, just reply to this email or call us on +91 77373 09657.</p>
       <p>Team FundLock<br><a href="https://www.fundlock.in">www.fundlock.in</a></p></div>`,
   });
 
@@ -100,7 +100,24 @@ export default async function handler(req, res) {
   const missing = REQUIRED.filter((k) => !data[k]);
   if (missing.length) return res.status(400).json({ error: `Please fill in: ${missing.map((k) => FIELDS[k]).join(', ')}` });
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) return res.status(400).json({ error: 'Please enter a valid email' });
+  if (data.phone.replace(/\D/g, '').length < 10) return res.status(400).json({ error: 'Please enter a valid phone number' });
+  for (const k of ['website', 'deck']) {
+    if (data[k] && !/^https?:\/\/[^\s]+\.[^\s]+$/i.test(data[k])) return res.status(400).json({ error: `Please enter a valid link for ${FIELDS[k]} (starting with https://)` });
+  }
   if (!body.consent) return res.status(400).json({ error: 'Please accept the Privacy Policy' });
+
+  // Abuse guard: at most 5 applications per network per hour.
+  try {
+    const { ipHash } = context(req);
+    if (ipHash) {
+      await ensureSchema();
+      const [{ n }] = await (await db())`SELECT count(*)::int AS n FROM leads
+        WHERE ip_hash = ${ipHash} AND status = 'submitted' AND submitted_at > now() - interval '1 hour'`;
+      if (n >= 5) return res.status(429).json({ error: 'Too many applications from this network. Please try again later' });
+    }
+  } catch (err) {
+    console.error('rate check failed:', err.message);
+  }
 
   // Store first: once saved, the application is safe even if email sending fails.
   let id = null;
@@ -113,7 +130,7 @@ export default async function handler(req, res) {
   let emailed = false;
   if (process.env.BREVO_API_KEY) {
     try {
-      await sendEmails(data);
+      await sendEmails(data, !!id);
       emailed = true;
     } catch (err) {
       console.error(err.message);
