@@ -54,7 +54,7 @@ document.getElementById('firmTrack').innerHTML =
 
 document.getElementById('logoGrid').innerHTML = INVESTORS.map((inv) => `
   <figure class="card inv-photo">
-    <img src="${inv.photo}" alt="${esc(inv.name || 'FundLock investor')}" loading="lazy" />
+    <img src="${inv.photo}" width="480" height="600" alt="${esc(inv.name || 'FundLock investor')}" loading="lazy" />
     ${inv.name ? `<figcaption><b>${esc(inv.name)}</b>${inv.role ? `<span>${esc(inv.role)}</span>` : ''}</figcaption>` : ''}
   </figure>`).join('');
 
@@ -96,11 +96,16 @@ const nav = document.getElementById('nav');
 const menuBtn = document.getElementById('menuBtn');
 const setMenu = (open) => {
   nav.classList.toggle('open', open);
+  document.body.classList.toggle('menu-open', open);
   menuBtn.setAttribute('aria-expanded', open);
   menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
 };
 menuBtn.addEventListener('click', () => setMenu(!nav.classList.contains('open')));
 nav.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false); });
+// Tapping anywhere outside the open menu closes it.
+document.addEventListener('click', (e) => {
+  if (nav.classList.contains('open') && !nav.contains(e.target) && !menuBtn.contains(e.target)) setMenu(false);
+});
 addEventListener('keydown', (e) => { if (e.key === 'Escape' && nav.classList.contains('open')) { setMenu(false); menuBtn.focus(); } });
 
 // ---- Reveal, counters, bars ----
@@ -276,6 +281,23 @@ form.addEventListener('change', (e) => {
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') syncDraft(true); });
 window.addEventListener('pagehide', () => syncDraft(true));
 
+// Success: replace the form with a clear confirmation and next steps.
+function showSuccess({ name, email }) {
+  const box = document.getElementById('applyDone');
+  const first = String(name || '').trim().split(/\s+/)[0];
+  box.querySelector('[data-name]').textContent = first ? `Thank you, ${first}!` : 'Thank you!';
+  box.querySelector('[data-email]').textContent = email || 'your inbox';
+  form.hidden = true;
+  box.hidden = false;
+  box.focus();
+  box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+document.getElementById('applyAgain').addEventListener('click', () => {
+  document.getElementById('applyDone').hidden = true;
+  form.hidden = false;
+  form.elements.name.focus();
+});
+
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   if (!validateAll()) return;
@@ -293,6 +315,7 @@ form.addEventListener('submit', async (e) => {
     });
     const out = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(out.error || 'Something went wrong');
+    const sent = { name: data.name, email: data.email };
     form.reset();
     // Start fresh: the draft is now a submitted application.
     store.del('fl-app-draft');
@@ -300,9 +323,9 @@ form.addEventListener('submit', async (e) => {
     store.set('fl-app-sid', sid);
     lastSynced = JSON.stringify(draftData());
     newVisit = true;
-    msg.className = 'form-msg ok';
-    msg.textContent = "Thanks! Your application is in. We'll get back to you within 5 business days.";
-    msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    msg.className = 'form-msg';
+    msg.textContent = '';
+    showSuccess(sent);
   } catch (err) {
     msg.className = 'form-msg err';
     msg.textContent = `${err.message}. Please try again or email info@fundlock.in.`;
@@ -315,8 +338,13 @@ form.addEventListener('submit', async (e) => {
 // ---- Sticky apply button (mobile): shown after the hero, hidden while the form is on screen ----
 const sticky = document.getElementById('stickyCta');
 if (sticky) {
-  let pastHero = false, formVisible = false;
-  const upd = () => sticky.classList.toggle('show', pastHero && !formVisible);
+  let pastHero = false;
+  const covered = new Set(); // the form section, disclosures and footer: the button would only get in the way there
+  const upd = () => sticky.classList.toggle('show', pastHero && covered.size === 0);
   new IntersectionObserver(([e]) => { pastHero = !e.isIntersecting; upd(); }).observe(document.getElementById('hero'));
-  new IntersectionObserver(([e]) => { formVisible = e.isIntersecting; upd(); }).observe(document.getElementById('applyForm'));
+  const endIO = new IntersectionObserver((entries) => {
+    entries.forEach((e) => (e.isIntersecting ? covered.add(e.target) : covered.delete(e.target)));
+    upd();
+  });
+  document.querySelectorAll('#apply, .disc, .footer').forEach((el) => endIO.observe(el));
 }

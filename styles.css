@@ -734,3 +734,33 @@ body{background:var(--paper);color:var(--text)}
 .cookie .ck-title{font-weight:600;font-size:15px;color:var(--text)}
 .cookie>div:not(.ico){padding-right:28px}
 @media (min-width:561px){.cookie{left:auto;right:24px;bottom:24px;transform:none;width:360px;max-width:calc(100% - 48px)}}
+
+/* ---- Round 4 UI/UX fixes ---- */
+/* 2. lock page scroll while the mobile menu is open */
+body.menu-open{overflow:hidden}
+/* 3. 44px minimum tap targets on touch screens */
+@media (max-width:860px){
+  .menu-btn{display:grid;place-items:center;width:44px;height:44px;margin-right:-9px}
+  .li{width:44px;height:44px}
+  .apply-form .consent{min-height:44px;align-items:center}
+  .apply-form .consent input{width:22px;height:22px;margin:0}
+  .apply-form .consent a,.form-note a{display:inline-block;padding:12px 0;margin:-12px 0}
+  .f-col a,.f-bottom nav a{display:flex;align-items:center;min-height:44px;padding:0}
+  .contact b a{display:inline-flex;align-items:center;min-height:44px}
+  .cookie .acts .btn{min-height:44px;padding:0 20px}
+  .cookie a{display:inline-flex;align-items:center;min-height:44px}
+  .cookie .x{width:44px;height:44px;top:4px;right:4px}
+}
+/* 6. investor photos keep their space while loading */
+.inv-photo img{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover}
+/* 10. success panel */
+.apply-done{text-align:left;padding:8px 2px}
+.apply-done:focus{outline:none}
+.done-ico{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:var(--ink);border:1px solid rgba(212,166,74,.5);margin-bottom:16px}
+.done-ico svg{width:26px;height:26px;color:var(--gold-lt)}
+.apply-done h3{font-size:26px;margin-bottom:8px}
+.apply-done p{color:var(--muted);margin-bottom:18px}
+.apply-done ol{margin:0 0 24px 20px;display:grid;gap:10px;color:var(--text)}
+.apply-done li{padding-left:4px}
+.apply-done a{color:var(--gold-text);font-weight:600}
+@media (max-width:860px){.ready .btn,.disc-box .fine a{min-height:44px;display:inline-flex;align-items:center}.form-note a{padding:13px 0}}
