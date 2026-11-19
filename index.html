@@ -46,15 +46,16 @@
   </div>
 </header>
 
-<!-- Side section dots -->
-  <a href="#hero" title="Top"></a>
-  <a href="#stats" title="At a glance"></a>
-  <a href="#stories" title="Founder stories"></a>
-  <a href="#investors" title="Investors"></a>
-  <a href="#support" title="What you get"></a>
-  <a href="#process" title="Process &amp; fee"></a>
-  <a href="#faq" title="FAQ"></a>
-  <a href="#applyForm" title="Apply"></a>
+<!-- Side section dots (mouse shortcut; the header menu covers keyboard and screen-reader users) -->
+<nav class="dots" aria-hidden="true">
+  <a tabindex="-1" href="#hero" title="Top"></a>
+  <a tabindex="-1" href="#stats" title="At a glance"></a>
+  <a tabindex="-1" href="#stories" title="Founder stories"></a>
+  <a tabindex="-1" href="#investors" title="Investors"></a>
+  <a tabindex="-1" href="#support" title="What you get"></a>
+  <a tabindex="-1" href="#process" title="Process &amp; fee"></a>
+  <a tabindex="-1" href="#faq" title="FAQ"></a>
+  <a tabindex="-1" href="#applyForm" title="Apply"></a>
 </nav>
 
 <main id="main">
@@ -108,7 +109,7 @@
     <div class="story-grid">
       <article class="card story reveal">
         <i data-lucide="quote" class="q"></i>
-        <div class="who"><img class="avatar" src="/assets/people/shubham-rajput.jpg" alt="Shubham Rajput" width="60" height="60" loading="lazy" /><div><h3>Shubham Rajput</h3><small>Founder &amp; CEO</small><em>Bizcore Services</em></div></div>
+        <div class="who"><img class="avatar" src="/assets/people/shubham-rajput-v2.jpg" alt="Shubham Rajput" width="60" height="60" loading="lazy" /><div><h3>Shubham Rajput</h3><small>Founder &amp; CEO</small><em>Bizcore Services</em></div></div>
         <div class="stars" role="img" aria-label="Rated 5 out of 5">★★★★★</div>
         <blockquote>"The team helped us think through our pitch and made warm introductions to investors who actually understood our space. We closed our seed round in about 6 weeks."</blockquote>
         <div class="raised"><div><small>Amount Raised</small><b>₹3.5 Cr</b></div><a class="li" href="https://www.linkedin.com/in/shubham-rajput-843655372" target="_blank" rel="noopener noreferrer" aria-label="Shubham Rajput on LinkedIn"><i data-lucide="linkedin"></i></a></div>
@@ -122,7 +123,7 @@
       </article>
       <article class="card story reveal">
         <i data-lucide="quote" class="q"></i>
-        <div class="who"><img class="avatar" src="/assets/people/aditya-pandey.jpg" alt="Aditya Pandey" width="60" height="60" loading="lazy" /><div><h3>Aditya Pandey</h3><small>Founder</small><em>Deva Media</em></div></div>
+        <div class="who"><img class="avatar" src="/assets/people/aditya-pandey-v2.jpg" alt="Aditya Pandey" width="60" height="60" loading="lazy" /><div><h3>Aditya Pandey</h3><small>Founder</small><em>Deva Media</em></div></div>
         <div class="stars" role="img" aria-label="Rated 5 out of 5">★★★★★</div>
         <blockquote>"What stood out was the personal attention. They were available when we had questions and genuinely cared about helping us succeed. Grateful for their support."</blockquote>
         <div class="raised"><div><small>Amount Raised</small><b>₹2.8 Cr</b></div><a class="li" href="https://www.linkedin.com/in/adityaa-pandey" target="_blank" rel="noopener noreferrer" aria-label="Aditya Pandey on LinkedIn"><i data-lucide="linkedin"></i></a></div>
@@ -220,6 +221,7 @@
     <p class="lede reveal">We're looking for founders with clear vision and execution capability. If that's you, we'd love to learn more about what you're building.</p>
     <div class="next reveal" id="applyForm">
       <p class="next-intro">Takes about 5 minutes. Fields marked * are required.</p>
+      <p class="draft-msg" id="draftMsg" role="status" hidden></p>
       <form class="apply-form" id="appForm" novalidate>
         <div class="f2">
           <label>Founder name*<input name="name" required autocomplete="name" /></label>
@@ -243,10 +245,10 @@
           <label>Website<input name="website" type="url" placeholder="https://" /></label>
           <label>Pitch deck link<input name="deck" type="url" placeholder="Google Drive / Docsend link" /></label>
         </div>
-        <label>Tell us about your business*<textarea name="about" rows="4" required placeholder="What you do, traction so far, and what the funding is for"></textarea></label>
+        <label>Tell us about your business*<textarea name="about" rows="4" maxlength="4000" aria-describedby="aboutCount" required placeholder="What you do, traction so far, and what the funding is for"></textarea><span class="char-count" id="aboutCount">0 / 4000</span></label>
         <label class="hp" aria-hidden="true">Leave empty<input name="company_url" tabindex="-1" autocomplete="off" /></label>
-        <label class="consent"><input type="checkbox" name="consent" required /> <span>I agree to the <a href="/privacy.html" target="_blank">Privacy Policy</a> and to FundLock contacting me about my application.</span></label>
-        <p class="form-note">Applying is free. Selected startups pay a one-time program fee of ₹1,00,000 plus applicable taxes. <a href="/terms.html" target="_blank">Terms &amp; conditions apply</a></p>
+        <label class="consent"><input type="checkbox" name="consent" required /> <span>I agree to the <a href="/privacy.html" target="_blank" rel="noopener">Privacy Policy<span class="sr-only"> (opens in a new tab)</span><span aria-hidden="true" class="ext">↗</span></a> and to FundLock contacting me about my application.</span></label>
+        <p class="form-note">Applying is free. Selected startups pay a one-time program fee of ₹1,00,000 plus applicable taxes. <a href="/terms.html" target="_blank" rel="noopener">Terms &amp; conditions apply<span class="sr-only"> (opens in a new tab)</span><span aria-hidden="true" class="ext">↗</span></a></p>
         <p class="form-msg" id="formMsg" role="status" aria-live="polite"></p>
         <div class="hero-ctas">
           <button type="submit" class="btn btn-primary btn-lg">Submit Application <i data-lucide="arrow-right"></i></button>

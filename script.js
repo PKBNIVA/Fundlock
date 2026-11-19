@@ -67,15 +67,17 @@ document.querySelector('#compareTable .table-cta')?.insertAdjacentHTML('beforebe
 const faqList = document.getElementById('faqList');
 faqList.innerHTML = FAQS.map(([q, a], i) => `
   <div class="qa reveal${i === 0 ? ' open' : ''}">
-    <button aria-expanded="${i === 0}"><span>${esc(q)}</span><span class="pm">${i === 0 ? '−' : '+'}</span></button>
-    <div class="ans"><div><p>${esc(a)}</p></div></div>
+    <h3 class="q"><button id="faq-q${i}" aria-expanded="${i === 0}" aria-controls="faq-a${i}"><span>${esc(q)}</span><span class="pm" aria-hidden="true">${i === 0 ? '−' : '+'}</span></button></h3>
+    <div class="ans" id="faq-a${i}" role="region" aria-labelledby="faq-q${i}"${i === 0 ? '' : ' aria-hidden="true"'}><div><p>${esc(a)}</p></div></div>
   </div>`).join('');
 faqList.addEventListener('click', (e) => {
   const btn = e.target.closest('button');
   if (!btn) return;
-  const qa = btn.parentElement;
+  const qa = btn.closest('.qa');
   const open = qa.classList.toggle('open');
   btn.setAttribute('aria-expanded', open);
+  // Closed answers are only squashed visually, so hide them from screen readers too.
+  qa.querySelector('.ans').setAttribute('aria-hidden', !open);
   btn.querySelector('.pm').textContent = open ? '−' : '+';
 });
 
@@ -262,8 +264,9 @@ function syncDraft(useBeacon = false) {
 const saved = store.get('fl-app-draft');
 if (saved && Object.values(saved).some(Boolean)) {
   for (const k of DRAFT_FIELDS) if (saved[k] && form.elements[k] && !form.elements[k].value) form.elements[k].value = saved[k];
-  msg.className = 'form-msg';
-  msg.textContent = 'Welcome back! We kept the details you entered last time.';
+  const draftMsg = document.getElementById('draftMsg');
+  draftMsg.textContent = 'Welcome back! We kept the details you entered last time.';
+  draftMsg.hidden = false;
 }
 
 form.addEventListener('input', (e) => {
@@ -348,3 +351,29 @@ if (sticky) {
   });
   document.querySelectorAll('#apply, .disc, .footer').forEach((el) => endIO.observe(el));
 }
+
+// ---- Character counter for "Tell us about your business" ----
+const about = form.elements.about;
+const aboutCount = document.getElementById('aboutCount');
+const updCount = () => {
+  const n = about.value.length;
+  aboutCount.textContent = `${n.toLocaleString('en-IN')} / 4,000`;
+  aboutCount.classList.toggle('near', n > 3600);
+};
+about.addEventListener('input', updCount);
+form.addEventListener('reset', () => setTimeout(updCount));
+updCount();
+
+// ---- Highlight the menu link for the section on screen ----
+const navLinks = [...document.querySelectorAll('#nav a[href^="#"]:not(.btn)')];
+const navIO = new IntersectionObserver((entries) => {
+  entries.forEach((en) => {
+    if (!en.isIntersecting) return;
+    navLinks.forEach((a) => {
+      const on = a.getAttribute('href') === '#' + en.target.id;
+      a.classList.toggle('active', on);
+      if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
+    });
+  });
+}, { rootMargin: '-45% 0px -50% 0px' });
+navLinks.forEach((a) => { const sec = document.querySelector(a.getAttribute('href')); if (sec) navIO.observe(sec); });
