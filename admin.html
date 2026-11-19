@@ -6,6 +6,8 @@
   <meta name="robots" content="noindex, nofollow" />
   <title>FundLock Admin</title>
   <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <meta name="theme-color" content="#0b0b0f" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -13,19 +15,19 @@
     *{margin:0;padding:0;box-sizing:border-box}
     :root{
       --bg:#f6f7fb;--surface:#fff;--line:#e6e8f0;--line2:#eef0f5;--text:#141a2e;--muted:#5f6680;--dim:#8a90a8;
-      --accent:#6d28d9;--accent-soft:#f1ebff;--grad:linear-gradient(90deg,#2563eb,#9333ea);
+      --accent:#7a5714;--accent-soft:#f6efdf;--grad:linear-gradient(180deg,#e2bb62,#c3922f);
       --green:#15803d;--green-soft:#e8f7ee;--amber:#b45309;--amber-soft:#fff4e0;--red:#b91c1c;--red-soft:#fdecec;--blue:#1d4ed8;--blue-soft:#e8efff;
       --shadow:0 1px 2px rgba(20,26,46,.05),0 4px 16px -6px rgba(20,26,46,.08);
     }
     body{font-family:Inter,system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
     button,input,select,textarea{font:inherit;color:inherit}
     button{cursor:pointer;border:0;background:none}
-    a{color:var(--blue);text-decoration:none}
+    a{color:var(--accent);text-decoration:none}
     a:hover{text-decoration:underline}
     [hidden]{display:none!important}
     .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9px;border:1px solid var(--line);background:var(--surface);font-weight:500;font-size:13.5px;white-space:nowrap}
     .btn:hover{border-color:#cfd3e2}
-    .btn-primary{background:var(--grad);color:#fff;border:0}
+    .btn-primary{background:var(--grad);color:#0b0b0f;font-weight:600;border:0}
     .btn-danger{color:var(--red);border-color:#f3c9c9}
     .btn svg{width:16px;height:16px}
 
@@ -37,7 +39,7 @@
     .login p{color:var(--muted);font-size:13.5px}
     .field{display:grid;gap:6px;font-size:13px;color:var(--muted)}
     .field input,.field select,.field textarea{border:1px solid var(--line);border-radius:9px;padding:10px 12px;background:#fff;width:100%}
-    .field input:focus,.field select:focus,.field textarea:focus,.search:focus{outline:none;border-color:#a78bfa;box-shadow:0 0 0 3px rgba(139,92,246,.18)}
+    .field input:focus,.field select:focus,.field textarea:focus,.search:focus{outline:none;border-color:#a78bfa;box-shadow:0 0 0 3px rgba(212,166,74,.25)}
     .login .btn-primary{justify-content:center;padding:11px}
     .err{color:var(--red);font-size:13px;min-height:18px}
 
@@ -127,7 +129,7 @@
 <!-- Login -->
 <section class="login" id="loginView" hidden>
   <form id="loginForm">
-    <div class="brand"><img src="/assets/brand/logo-mark.png" alt="" /> FundLock Admin</div>
+    <div class="brand"><img src="/assets/brand/logo-mark-96.png" alt="" /> FundLock Admin</div>
     <p>Sign in to view applications and unfinished sign-ups.</p>
     <label class="field">Password<input type="password" name="password" autocomplete="current-password" required autofocus /></label>
     <div class="err" id="loginErr" role="alert"></div>
@@ -139,7 +141,7 @@
 <div id="appView" hidden>
   <header class="top">
     <div class="in">
-      <div class="brand"><img src="/assets/brand/logo-mark.png" alt="" /> FundLock <small>Admin</small></div>
+      <div class="brand"><img src="/assets/brand/logo-mark-96.png" alt="" /> FundLock <small>Admin</small></div>
       <span class="sub" id="updated"></span>
       <button class="btn" id="refreshBtn" title="Refresh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg><span class="lbl">Refresh</span></button>
       <a class="btn" id="exportBtn" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg><span class="lbl">Export CSV</span></a>
