@@ -540,3 +540,29 @@ body{background:#fff;color:var(--text)}
 @media (max-width:1024px){.logo-grid{grid-template-columns:repeat(3,1fr)}}
 @media (max-width:560px){.logo-grid{grid-template-columns:repeat(2,1fr)}.nav{background:#fff}}
 @media (max-width:860px){.nav{background:rgba(255,255,255,.98)}}
+
+/* ---- UI/UX fixes ---- */
+section[id],#applyForm{scroll-margin-top:90px}
+.apply-form .consent{display:flex;align-items:flex-start;gap:10px;line-height:1.5}
+.apply-form .consent input{width:18px;height:18px;flex-shrink:0;margin-top:2px}
+.apply-form .form-note{margin:0;line-height:1.5}
+.final .ring{z-index:0;pointer-events:none}
+.final .container{position:relative;z-index:1}
+.f-col a,.f-bottom nav a{padding:4px 0}
+.dots a{position:relative}
+.dots a::before{content:"";position:absolute;inset:-8px}
+:focus-visible{outline:2px solid #7c3aed;outline-offset:3px}
+.cookie{left:50%;right:auto;transform:translateX(-50%);width:calc(100% - 32px);max-width:720px;padding:18px 20px}
+.cookie .acts{margin:12px 0 6px}
+@media (max-width:860px){.dots,.mouse{display:none}}
+@media (max-width:560px){
+  .final .ring{display:none}
+  .season{font-size:13px;padding:6px 6px 6px 12px;flex-wrap:wrap;justify-content:center}
+  .hero-ctas .btn,.apply-form .hero-ctas .btn{width:100%;justify-content:center}
+  .cookie{left:16px;right:16px;transform:none;width:auto;bottom:12px}
+}
+.cookie{max-width:560px;padding:14px 16px;gap:12px}
+.cookie h4{font-size:15px;margin-bottom:2px}.cookie p{font-size:13px}
+.cookie .acts{margin:10px 0 4px}.cookie .acts .btn{padding:6px 16px;font-size:13px}
+@media (max-width:560px){.cookie>.ico{display:none}.cookie .x{top:10px;right:10px}}
+@media (max-width:560px){.hero{min-height:auto;padding-top:110px;padding-bottom:64px}.season{flex-wrap:nowrap}}

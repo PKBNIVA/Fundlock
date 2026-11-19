@@ -20,6 +20,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css" />
+  <noscript><style>.reveal{opacity:1!important;transform:none!important}</style></noscript>
 </head>
 <body>
 <a class="skip" href="#main">Skip to main content</a>
@@ -37,9 +38,9 @@
       <a href="#beyond">Network</a>
       <a href="#process">Process</a>
       <a href="#faq">FAQ</a>
-      <a href="#apply" class="btn btn-primary">Apply Now</a>
+      <a href="#applyForm" class="btn btn-primary">Apply Now</a>
     </nav>
-    <button class="menu-btn" id="menuBtn" aria-label="Open menu"><i data-lucide="menu"></i></button>
+    <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><i data-lucide="menu"></i></button>
   </div>
 </header>
 
@@ -62,7 +63,7 @@
   <div class="grid-bg"></div>
   <span class="rupee r1">₹</span><span class="rupee r2">₹</span><span class="rupee r3">₹</span>
   <div class="container">
-    <div class="season reveal"><span class="tag">Applications Open</span> Applications close <strong>31 December</strong></div>
+    <div class="season reveal"><span class="tag">Applications Open</span> Closes <strong>31 December</strong></div>
     <div class="pill reveal"><span class="dot"></span>Committed to getting founders funded</div>
     <h1 class="reveal">
       <span>A Focused Approach</span>
@@ -128,11 +129,6 @@
         <blockquote>"What stood out was the personal attention. They were available when we had questions and genuinely cared about helping us succeed. Grateful for their support."</blockquote>
         <div class="raised"><div><small>Amount Raised</small><b>₹2.8 Cr</b></div><a class="li" href="https://www.linkedin.com/in/adityaa-pandey" target="_blank" rel="noopener noreferrer" aria-label="Aditya Pandey on LinkedIn"><i data-lucide="linkedin"></i></a></div>
       </article>
-    </div>
-    <div class="mini-stats">
-      <div class="card mini reveal"><b>94%</b><span>Funding Success Rate</span></div>
-      <div class="card mini reveal"><b>60</b><span>Avg. Days to Fund</span></div>
-      <div class="card mini reveal"><b>₹75 Cr+</b><span>Active Investor Capacity</span></div>
     </div>
   </div>
 </section>
@@ -406,7 +402,7 @@
         </div>
         <label>Tell us about your business*<textarea name="about" rows="4" required placeholder="What you do, traction so far, and what the funding is for"></textarea></label>
         <label class="hp" aria-hidden="true">Leave empty<input name="company_url" tabindex="-1" autocomplete="off" /></label>
-        <label class="consent"><input type="checkbox" name="consent" required /> I agree to the <a href="/privacy.html" target="_blank">Privacy Policy</a> and to FundLock contacting me about my application.</label>
+        <label class="consent"><input type="checkbox" name="consent" required /> <span>I agree to the <a href="/privacy.html" target="_blank">Privacy Policy</a> and to FundLock contacting me about my application.</span></label>
         <p class="form-note">Applying is free. Selected startups pay a one-time program fee of ₹1,00,000 plus applicable taxes. <a href="/terms.html" target="_blank">Terms &amp; conditions apply</a></p>
         <div class="hero-ctas">
           <button type="submit" class="btn btn-primary btn-lg">Submit Application <i data-lucide="arrow-right"></i></button>
@@ -462,8 +458,8 @@
 <div class="cookie" id="cookie" role="dialog" aria-label="Cookie Consent">
   <div class="ico ico-sm i-violet"><i data-lucide="cookie"></i></div>
   <div>
-    <h4>Cookie Consent</h4>
-    <p>We don't use advertising or analytics cookies. We store your application progress in your browser so you don't lose it, and save unfinished applications so our team can help you complete them.</p>
+    <h4>Your privacy</h4>
+    <p>No ads or analytics cookies. We save your application progress so you don't lose it.</p>
     <div class="acts"><button class="btn btn-primary" data-cookie="accepted">Accept</button><button class="btn btn-ghost" data-cookie="declined">Decline</button></div>
     <a href="/cookies.html">Cookie Policy</a>
   </div>

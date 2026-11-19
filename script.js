@@ -91,8 +91,15 @@ onScroll();
 toTop.addEventListener('click', () => scrollTo({ top: 0, behavior: 'smooth' }));
 
 const nav = document.getElementById('nav');
-document.getElementById('menuBtn').addEventListener('click', () => nav.classList.toggle('open'));
-nav.addEventListener('click', (e) => { if (e.target.closest('a')) nav.classList.remove('open'); });
+const menuBtn = document.getElementById('menuBtn');
+const setMenu = (open) => {
+  nav.classList.toggle('open', open);
+  menuBtn.setAttribute('aria-expanded', open);
+  menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+};
+menuBtn.addEventListener('click', () => setMenu(!nav.classList.contains('open')));
+nav.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false); });
+addEventListener('keydown', (e) => { if (e.key === 'Escape' && nav.classList.contains('open')) { setMenu(false); menuBtn.focus(); } });
 
 // ---- Reveal, counters, bars ----
 const countUp = (el) => {
@@ -250,6 +257,7 @@ form.addEventListener('submit', async (e) => {
     newVisit = true;
     msg.className = 'form-msg ok';
     msg.textContent = "Thanks! Your application is in. We'll get back to you within 5 business days.";
+    msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
   } catch (err) {
     msg.className = 'form-msg err';
     msg.textContent = `${err.message}. Please try again or email info@fundlock.in.`;
