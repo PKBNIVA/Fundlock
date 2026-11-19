@@ -14,19 +14,6 @@ const INVESTORS = [
   { photo: '/assets/investors/investor-5.jpg', name: '', role: '', linkedin: '' },
 ];
 
-// [feature, FundLock, Solo]
-const COMPARE = [
-  ['Committed Investor Access', true, false],
-  ['Curated Investor Network', true, false],
-  ['Strategic Business Review', true, true],
-  ['On-Spot Funding Rounds', true, false],
-  ['Ecosystem Partnerships', true, false],
-  ['Government Grant Access', true, false],
-  ['Marketing Solutions & Website Development', true, false],
-  ['Curated, Selective Cohort', true, false],
-  ['Post-Investment Guidance', true, false],
-];
-
 const FAQS = [
   ['What makes FundLock different from other platforms?',
     "We work with just 30 startups per year, which allows us to provide dedicated support and attention. You'll get warm investor introductions, pitch feedback, and guidance throughout your fundraising journey, not just a directory of contacts."],
@@ -49,13 +36,10 @@ const FAQS = [
 // ---- Render ----
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-// The list is repeated once so the loop is seamless; the copy is hidden from screen readers.
-document.getElementById('firmTrack').innerHTML =
-  FIRMS.map((f) => `<li class="firm">${f}</li>`).join('') +
-  FIRMS.map((f) => `<li class="firm" aria-hidden="true">${f}</li>`).join('');
+document.getElementById('firmList').innerHTML = FIRMS.map((f) => `<li>${esc(f)}</li>`).join('');
 
 document.getElementById('logoGrid').innerHTML = INVESTORS.map((inv) => `
-  <figure class="card inv-photo">
+  <figure class="inv">
     <img src="${inv.photo}" width="480" height="600" alt="${esc(inv.name || 'FundLock investor')}" loading="lazy" />
     ${inv.name ? `<figcaption><div><b>${esc(inv.name)}</b>${inv.role ? `<span>${esc(inv.role)}</span>` : ''}</div>${
       /^https:\/\/([a-z]{2,3}\.)?linkedin\.com\//.test(inv.linkedin || '')
@@ -63,11 +47,6 @@ document.getElementById('logoGrid').innerHTML = INVESTORS.map((inv) => `
     }</figcaption>` : ''}
   </figure>`).join('');
 
-const mark = (ok) => ok
-  ? '<span class="yes"><i data-lucide="check"></i></span>'
-  : '<span class="no"><i data-lucide="x"></i></span>';
-document.querySelector('#compareTable .table-cta')?.insertAdjacentHTML('beforebegin',
-  COMPARE.map(([f, a, b]) => `<div class="row"><span>${esc(f)}</span><span class="c">${mark(a)}</span><span class="c">${mark(b)}</span></div>`).join(''));
 
 const faqList = document.getElementById('faqList');
 faqList.innerHTML = FAQS.map(([q, a], i) => `
