@@ -47,8 +47,10 @@ const FAQS = [
 // ---- Render ----
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 
+// The list is repeated once so the loop is seamless; the copy is hidden from screen readers.
 document.getElementById('firmTrack').innerHTML =
-  [...FIRMS, ...FIRMS].map((f) => `<div class="firm">${f}</div>`).join('');
+  FIRMS.map((f) => `<li class="firm">${f}</li>`).join('') +
+  FIRMS.map((f) => `<li class="firm" aria-hidden="true">${f}</li>`).join('');
 
 document.getElementById('logoGrid').innerHTML = INVESTORS.map((inv) => `
   <figure class="card inv-photo">
@@ -149,6 +151,52 @@ cookie.addEventListener('click', (e) => {
 const form = document.getElementById('appForm');
 const msg = document.getElementById('formMsg');
 
+// Inline validation: each invalid field gets its own message right under it.
+const fieldMsg = (el) => {
+  const v = el.validity;
+  if (el.type === 'checkbox') return 'Please tick this box to continue.';
+  if (v.valueMissing) return el.tagName === 'SELECT' ? 'Please choose an option.' : 'This field is required.';
+  if (v.typeMismatch && el.type === 'email') return 'Please enter a valid email, like name@company.com.';
+  if (v.typeMismatch && el.type === 'url') return 'Please enter a full link starting with https://';
+  return el.validationMessage;
+};
+function checkField(el) {
+  if (el.name === 'phone' && el.value.trim() && el.value.replace(/\D/g, '').length < 10) el.setCustomValidity('Please enter a 10-digit phone number.');
+  else if (el.name === 'phone') el.setCustomValidity('');
+  const box = el.closest('label');
+  let err = box.querySelector('.field-err');
+  if (el.checkValidity()) {
+    el.removeAttribute('aria-invalid');
+    err?.remove();
+    return true;
+  }
+  el.setAttribute('aria-invalid', 'true');
+  if (!err) {
+    err = document.createElement('span');
+    err.className = 'field-err';
+    err.id = 'err-' + el.name;
+    el.setAttribute('aria-describedby', err.id);
+    box.append(err);
+  }
+  err.textContent = fieldMsg(el);
+  return false;
+}
+function validateAll() {
+  const fields = [...form.querySelectorAll('input[required], select[required], textarea[required], input[type=url], input[name=phone]')];
+  const bad = fields.filter((el) => !checkField(el));
+  if (bad.length) {
+    msg.className = 'form-msg err';
+    msg.textContent = bad.length === 1 ? 'Please fix the highlighted field.' : `Please fix the ${bad.length} highlighted fields.`;
+    bad[0].focus();
+    return false;
+  }
+  return true;
+}
+// Re-check a field once the visitor leaves it or corrects it.
+form.addEventListener('focusout', (e) => { if (e.target.matches('input, select, textarea') && e.target.name !== 'company_url' && (e.target.value || e.target.hasAttribute('aria-invalid'))) checkField(e.target); });
+form.addEventListener('input', (e) => { if (e.target.hasAttribute('aria-invalid')) checkField(e.target); });
+form.addEventListener('change', (e) => { if (e.target.type === 'checkbox' && e.target.hasAttribute('aria-invalid')) checkField(e.target); });
+
 // Draft capture: whatever a visitor types is kept in their browser (so they can pick up where they left off)
 // and synced to /api/capture so the team can see unfinished applications. Syncs are debounced while typing,
 // sent right away when a field is completed, and once more with sendBeacon when the visitor leaves the page.
@@ -230,10 +278,7 @@ window.addEventListener('pagehide', () => syncDraft(true));
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
-  if (!form.checkValidity()) {
-    form.reportValidity();
-    return;
-  }
+  if (!validateAll()) return;
   const btn = form.querySelector('button[type=submit]');
   btn.disabled = true;
   msg.className = 'form-msg';
@@ -261,6 +306,7 @@ form.addEventListener('submit', async (e) => {
   } catch (err) {
     msg.className = 'form-msg err';
     msg.textContent = `${err.message}. Please try again or email info@fundlock.in.`;
+    msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
   } finally {
     btn.disabled = false;
   }

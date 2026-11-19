@@ -686,3 +686,47 @@ body{background:var(--paper);color:var(--text)}
 .disc-box h4 svg,.disc-box p b{color:var(--gold-dk)}
 .to-top{box-shadow:0 10px 24px -10px rgba(20,21,28,.5)}
 @media (max-width:860px){.to-top{display:none}}
+
+/* ---- Round 3 UI/UX fixes ---- */
+/* 1. small gold text needs a darker gold to reach 4.5:1 on light backgrounds */
+:root{--gold-text:#7a5714}
+.pill,.who em,.step small,.apply-form .consent a,.form-note a,.legal a,.cookie a,.disc-box p b,.disc-box .fine a{color:var(--gold-text)}
+/* 2. renamed headings keep their old look */
+.trusted-title{font-weight:500;font-size:15px;color:var(--muted);margin-bottom:26px}
+.who h3{font-size:17px}
+.inv-point h3{font-size:16px;color:var(--text)}
+.f-col .f-h{font-size:16px;margin-bottom:18px;color:#fff}
+.disc-h{display:flex;gap:10px;align-items:center;font-size:17px;margin-bottom:16px}
+.disc-h svg{width:22px;height:22px;color:var(--gold-dk)}
+.ck-title{font-weight:600;font-size:15px;margin-bottom:2px;color:var(--text)}
+/* 3. marquee: list reset; pauses on hover or keyboard focus */
+.track{list-style:none;margin:0;padding:0}
+.marquee:focus-within .track{animation-play-state:paused}
+/* 5. readable small print */
+.note{font-size:13px;color:var(--muted)}
+.final small{font-size:14px;color:var(--muted)}
+/* 8. form intro */
+.next-intro{color:var(--muted);font-size:15px;margin-bottom:22px;text-align:left}
+/* 11. inline errors */
+.field-err{color:#b42318;font-size:13px}
+.apply-form [aria-invalid="true"]{border-color:#d92d20;box-shadow:0 0 0 3px rgba(217,45,32,.12)}
+.form-msg{min-height:0}
+.form-msg:empty{display:none}
+.form-msg.err{color:#b42318;background:#fef3f2;border:1px solid #fecdca;padding:10px 14px;border-radius:10px}
+.form-msg.ok{color:#05603a;background:#ecfdf3;border:1px solid #abefc6;padding:10px 14px;border-radius:10px}
+/* 12. footer now has three columns */
+.f-grid{grid-template-columns:2fr 1fr 1fr}
+@media (max-width:860px){.f-grid{grid-template-columns:1fr 1fr}.f-about{grid-column:1/-1}}
+/* 10. compact process list on phones */
+@media (max-width:860px){
+  .timeline::before{left:10px}
+  .step,.step:nth-child(even){margin-bottom:10px;padding-left:34px}
+  .step .card{padding:14px 16px;box-shadow:none}
+  .step .ico{display:none}
+  .step-head,.step:nth-child(even) .step-head{margin-bottom:4px;justify-content:flex-start}
+  .step-head>div{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .step h3{font-size:16px}
+  .step p{font-size:14px}
+  .step .node,.step:nth-child(even) .node{left:2px;width:18px;height:18px;top:22px}
+}
+@media (max-width:860px){.step:nth-child(n){text-align:left}.step:nth-child(n) .step-head{flex-direction:row;justify-content:flex-start}}
