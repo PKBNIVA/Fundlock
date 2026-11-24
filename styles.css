@@ -810,3 +810,6 @@ body.menu-open{overflow:hidden}
 .inv-photo figcaption span{display:block;font-size:12px;color:#d9d6cc}
 .inv-photo figcaption .li{width:32px;height:32px;flex-shrink:0}
 .inv-photo figcaption .li svg{width:16px;height:16px}
+/* two founder stories: keep the cards a sensible width and centred */
+.story-grid{grid-template-columns:repeat(2,minmax(0,420px));justify-content:center}
+@media (max-width:1024px){.story-grid{grid-template-columns:1fr;justify-content:stretch}}
